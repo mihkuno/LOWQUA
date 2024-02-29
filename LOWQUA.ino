@@ -12,29 +12,18 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 # define lcdVcc A3
 
 // speed
-# define DELAY 200
-
-/**
-* TODO: Ilisda ang drain based sa height of the container
-*
-*/  
+# define delay 200
 
 // water level
-# define stop   5  // gikan sa sensor, padulong sa kamot
-
+# define stop   5 
 // 10 cm  = 80%
-// 25 cm  = 20% 
-# define full   10 // ang extra space sa ulo sa container (kung unsa value ani mao pod ang extra 10cm nga water) 
-# define drain  25 // gikan sa sensor, padulong sa drained water (ang extra 10cm nga water)
+# define full   10    
+// 25 cm  = 20%
+# define drain  25      
 
-// away nani sabti
-int percentage(float x) {
-  return map(x, drain, full, 20, 80);
-}
+int percentage(float x) { return map(x, drain, full, 20, 80); }
 
 bool stopped = false;
-long duration;
-float distance;
 
 void setup() {
   // pins
@@ -44,10 +33,9 @@ void setup() {
 
   // lcd
   pinMode(lcdVcc, OUTPUT); 
-  digitalWrite(lcdVcc, HIGH); // turn on the lcd
-
-  lcd.init();           // initialize the lcd
-  lcd.backlight();      // Turn on the LCD screen backlight
+  digitalWrite(lcdVcc, HIGH); // Input 5volts
+  lcd.init();                 // Initialize
+  lcd.backlight();            // Turn on screen backlight
 
   // serial
   Serial.begin(115200);
@@ -63,10 +51,10 @@ void loop() {
   digitalWrite(trigPin, LOW);
 
   // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
+  const long duration = pulseIn(echoPin, HIGH);
 
   // Calculating the distance
-  distance = duration * 0.034 / 2;
+  const float distance = duration * 0.034 / 2;
 
   const bool isFull = distance <= full;
   const bool isStop = distance <= stop; 
@@ -103,11 +91,11 @@ void loop() {
     lcd.setCursor(0, 1);  // draw percentage at the bottom left
     lcd.print(String(percentage(distance)) + "%");
 
-    delay(DELAY);
+    delay(delay);
     lcd.clear();
   }
   else {
-    delay(DELAY);
+    delay(delay);
     lcd.clear();
   }
 }
